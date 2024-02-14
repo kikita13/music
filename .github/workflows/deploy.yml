@@ -27,9 +27,14 @@ jobs:
       - name: Check build result
         run: |
           if [ -d "dist" ]; then
-            echo "Build succeeded"
+            if [ -f "dist/index.js" ]; then
+              echo "Build succeeded"
+            else
+              echo "Build failed: index.js not found"
+              exit 1
+            fi
           else
-            echo "Build failed"
+            echo "Build failed: dist directory not found"
             exit 1
           fi
 
