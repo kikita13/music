@@ -54,6 +54,4 @@ client.on("messageCreate", async (message) => {
 });
 
 //Формирует клиент, принимает токен бота
-client.login(
-  "NzI5OTY1MDg2MjE0NzE3NDg2.G7FbxQ.qo67eVC1fd9yBs4ksObD-BzPLEpWET-twsQVg0"
-);
+client.login(process.env.BOT_TOKEN);
