@@ -39,6 +39,5 @@ jobs:
 
       - name: Start Bot
         run: ls
-        run: npm start
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
