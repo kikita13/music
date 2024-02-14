@@ -55,5 +55,5 @@ client.on("messageCreate", async (message) => {
 
 //Формирует клиент, принимает токен бота
 client.login(
-  "NzI5OTY1MDg2MjE0NzE3NDg2.GP8E3t.nMwP60RrR_rzKizQyYDK1gypXSVwXG6aGz2pPE"
+  "NzI5OTY1MDg2MjE0NzE3NDg2.G7FbxQ.qo67eVC1fd9yBs4ksObD-BzPLEpWET-twsQVg0"
 );
