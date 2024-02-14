@@ -38,6 +38,6 @@ jobs:
           node-version: '20'
 
       - name: Start Bot
-        run: ls
+        run: ls dist
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
