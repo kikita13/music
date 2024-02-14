@@ -13,3 +13,4 @@ export const stopCommand = (
     message.reply("Ээээ бля, я еще не начал даже");
   }
 };
+ 
