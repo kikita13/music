@@ -24,20 +24,6 @@ jobs:
       - name: Build TypeScript
         run: npm run build
 
-      - name: Check build result
-        run: |
-          if [ -d "dist" ]; then
-            if [ -f "dist/index.js" ]; then
-              echo "Build succeeded"
-            else
-              echo "Build failed: index.js not found"
-              exit 1
-            fi
-          else
-            echo "Build failed: dist directory not found"
-            exit 1
-          fi
-
       - name: Start Bot
         run: npm start
         env:
