@@ -33,5 +33,5 @@ jobs:
         uses: Wandalen/wretry.action@master
         with:
           action: ./
-          attempt_limit: 500
+          attempt_limit: 2
           attempt_delay: 2000
