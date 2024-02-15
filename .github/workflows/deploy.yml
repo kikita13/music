@@ -28,8 +28,7 @@ jobs:
         run: npm start
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-      
-      # Добавляем обработку ошибки и перезапуск джобы
+
       - name: Retry on failure
         uses: Wandalen/wretry.action@master
         with:
