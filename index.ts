@@ -1,6 +1,6 @@
 import { getClient, getInitialState } from "./helpers/index";
 import { ActivityType } from "discord.js";
-import { connect, startCommand, stopCommand, addCommand } from "./handlers";
+import { connect, startCommand, stopCommand, addCommand, queueCommand, helpCommand } from "./handlers";
 
 const client = getClient();
 //Устанавливаем статус боту
@@ -20,7 +20,11 @@ client.on("messageCreate", async (message) => {
   //Отрабатывает при команде *prefix*stop
   if (command === "stop") stopCommand(connect, message);
   //Отрабатывает при команде *prefix*add *text*
-  if (command === "add") addCommand(connect, message, argument, links)
+  if (command === "add") addCommand(connect, message, argument, links);
+  //Отрабатывает при команде *prefix*queue
+  if (command === "queue") queueCommand(connect, message);  
+  //Отрабатывает при команде *prefix*help
+  if (command === "help") helpCommand(message);
 });
 
 process.on("beforeExit", () => {
