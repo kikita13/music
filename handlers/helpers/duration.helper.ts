@@ -1,4 +1,4 @@
-export const duration = (time: string) => {
+export const duration = (time: number) => {
   const date = new Date(0);
 
   date.setSeconds(+time);

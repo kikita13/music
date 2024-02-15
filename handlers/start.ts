@@ -3,6 +3,7 @@ import {
   createAudioPlayer,
   createAudioResource,
   VoiceConnection,
+  AudioPlayerStatus,
 } from "@discordjs/voice";
 import { Message, VoiceBasedChannel } from "discord.js";
 import play from "play-dl";
@@ -33,6 +34,11 @@ export const startCommand = async (
     //Если бот подключился то начинает играть
     try {
       const player = createAudioPlayer();
+      // Выход из голосового канала после завершения проигрывания
+      player.on(AudioPlayerStatus.Idle, () => {
+        connect.destroy(); 
+    });
+
       const stream = await play.stream(link);
       const resource = createAudioResource(stream.stream, {inputType: stream.type});
 

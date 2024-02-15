@@ -53,5 +53,9 @@ client.on("messageCreate", async (message) => {
   }
 });
 
+process.on('beforeExit', () => {
+  client.destroy();
+});
+
 //Формирует клиент, принимает токен бота
 client.login(process.env.BOT_TOKEN);
