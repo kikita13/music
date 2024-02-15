@@ -4,16 +4,18 @@ import {
   createAudioResource,
   VoiceConnection,
   AudioPlayerStatus,
+  AudioPlayer,
 } from "@discordjs/voice";
 import { Message, VoiceBasedChannel } from "discord.js";
 import play from "play-dl";
-import { nowPlaying } from "./helpers";
+import { checkOnLink, nowPlaying } from "./helpers";
+import { QUEUE } from "../consts/queue";
 
-export let connect: VoiceConnection
+export let connect: VoiceConnection;
 
 //Формирует коннект и подключаемся к голосовому чату
 export const connection = (channelOfMember: VoiceBasedChannel) => {
-  connect =  joinVoiceChannel({
+  connect = joinVoiceChannel({
     channelId: channelOfMember.id,
     guildId: channelOfMember.guild.id,
     adapterCreator: channelOfMember.guild.voiceAdapterCreator,
@@ -24,11 +26,15 @@ export const connection = (channelOfMember: VoiceBasedChannel) => {
 export const startCommand = async (
   channelOfMember: VoiceBasedChannel,
   message: Message,
-  link: string
+  links: string[],
+  argument: string
 ) => {
   // Проверяем есть разрешенный id в голосовом чате
   if (!channelOfMember) return message.reply("В войс зайди заебал");
+  //Подключаемся к нему
   connection(channelOfMember);
+  //Получаем ссылку
+  const link = checkOnLink(argument, links);
 
   if (connect) {
     //Если бот подключился то начинает играть
@@ -36,11 +42,17 @@ export const startCommand = async (
       const player = createAudioPlayer();
       // Выход из голосового канала после завершения проигрывания
       player.on(AudioPlayerStatus.Idle, () => {
-        connect.destroy(); 
-    });
+        if (QUEUE.length === 0) {
+          connect.destroy();
+        } else {
+          getNextResource(player, message);
+        }
+      });
 
       const stream = await play.stream(link);
-      const resource = createAudioResource(stream.stream, {inputType: stream.type});
+      const resource = createAudioResource(stream.stream, {
+        inputType: stream.type,
+      });
 
       player.play(resource);
 
@@ -55,3 +67,21 @@ export const startCommand = async (
     message.reply("Ля, чет зайти не могу");
   }
 };
+
+const getNextResource = async (player: AudioPlayer, message: Message) => {
+  const streamLink = QUEUE.shift()
+
+  if (!streamLink) return;
+
+  const stream = await play.stream(streamLink);
+
+  const resource = createAudioResource(stream.stream, {
+    inputType: stream.type,
+  });
+
+  player.play(resource);
+
+  connect.subscribe(player);
+
+  message.reply(await nowPlaying(streamLink));
+}

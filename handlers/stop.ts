@@ -3,10 +3,10 @@ import { Message } from "discord.js";
 
 //Выполняется при команде *prefix*stop
 export const stopCommand = (
-  connect: VoiceConnection | undefined,
+  connect: VoiceConnection,
   message: Message
 ) => {
-  if (connect?.state.status === 'ready') {
+  if (connect.state.status === 'ready') {
     connect.destroy();
   } else {
     //Если бот не в голосовом чате
