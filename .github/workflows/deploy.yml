@@ -30,7 +30,7 @@ jobs:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
 
       - name: Retry on failure
-        uses: Wandalen/wretry.action@master
+        uses: Wandalen/wretry.action@v1.4.4
         with:
           action: ./
           attempt_limit: 2
