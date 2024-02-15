@@ -28,9 +28,3 @@ jobs:
         run: npm start
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-
-      - name: Retry on failure
-        uses: Wandalen/wretry.action@v1.4.4
-        with:
-          attempt_limit: 500
-          attempt_delay: 0
