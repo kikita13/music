@@ -27,7 +27,7 @@ jobs:
       - name: Start Bot
         run: npm start
         env:
-          BOT_TOKEN: ${{ secets.BOT_TOKEN }}
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
 
       - name: Retry on failure
         uses: Wandalen/wretry.action@v1.4.4
