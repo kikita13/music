@@ -16,7 +16,7 @@ export const getInitialState = async (message: Message) => {
   //Получаем ссылки на найденные видео
   const links = await searchVideoURLs(argument);
   //Получаем голосовой канал, в котором находится разрешенный id
-  const channel = channelOfMember(members);
+  const channel = channelOfMember(members, message);
 
   return {argument, channel, links, command}
 }
