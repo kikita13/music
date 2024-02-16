@@ -22,8 +22,8 @@ export const connection = (channelOfMember: VoiceBasedChannel) => {
   });
 };
 
-//Выполняется при команде *prefix*start *текст*
-export const startCommand = async (
+//Выполняется при команде *prefix*play *текст*
+export const playCommand = async (
   channelOfMember: VoiceBasedChannel,
   message: Message,
   links: string[],
