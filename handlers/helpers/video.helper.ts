@@ -26,13 +26,19 @@ export const addedToQueue = async (link: string) => {
 };
 
 export const addPlayListToQueue = async (link: string) => {
-  const formatedLink = formatPlayListLink(link);
+  const urls = await getPlaylistUrls(link);
 
-  const playlistInfo = await youtubeSearch.GetPlaylistData(formatedLink, 200);
-
-  playlistInfo.items.forEach((item: { id: string }) => QUEUE.push(`https://www.youtube.com/watch?v=${item.id}`));
-
+  QUEUE.push(...urls);
+  
   return QUEUE.shift() as string;
 };
 
 const formatPlayListLink = (link: string) => link.split("list=")[1].split("&")[0];
+
+export const getPlaylistUrls = async (link: string) => {
+  const formatedLink = formatPlayListLink(link);
+
+  const playlistInfo = await youtubeSearch.GetPlaylistData(formatedLink, 200);
+
+  return playlistInfo.items.map((video: { id: string; }) => `https://www.youtube.com/watch?v=${video.id}`) as string[]
+}

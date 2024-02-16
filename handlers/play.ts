@@ -12,6 +12,7 @@ import { checkOnLink, nowPlaying } from "./helpers";
 import { QUEUE } from "../consts/queue";
 
 export let connect: VoiceConnection;
+export let player: AudioPlayer;
 
 //Формирует коннект и подключаемся к голосовому чату
 export const connection = (channelOfMember: VoiceBasedChannel) => {
@@ -39,8 +40,8 @@ export const playCommand = async (
   if (connect) {
     //Если бот подключился то начинает играть
     try {
-      const player = createAudioPlayer();
-      // Выход из голосового канала после завершения проигрывания
+      player = createAudioPlayer();
+      // Выход из голосового канала после завершения проигрывания или следующий трек
       player.on(AudioPlayerStatus.Idle, () => {
         if (QUEUE.length === 0) {
           connect.destroy();
@@ -68,7 +69,7 @@ export const playCommand = async (
   }
 };
 
-const getNextResource = async (player: AudioPlayer, message: Message) => {
+export const getNextResource = async (player: AudioPlayer, message: Message) => {
   const streamLink = QUEUE.shift()
 
   if (!streamLink) return;

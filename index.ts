@@ -1,6 +1,7 @@
 import { getClient, getInitialState } from "./helpers/index";
 import { ActivityType } from "discord.js";
-import { connect, playCommand, stopCommand, addCommand, queueCommand, helpCommand } from "./handlers";
+import { connect, playCommand, stopCommand, addCommand, queueCommand, helpCommand, skipCommand } from "./handlers";
+import { QUEUE } from "./consts/queue";
 
 const client = getClient();
 //Устанавливаем статус боту
@@ -25,9 +26,13 @@ client.on("messageCreate", async (message) => {
   if (command === "queue") queueCommand(connect, message);  
   //Отрабатывает при команде *prefix*help
   if (command === "help") helpCommand(message);
+  //Отрабатывает при команде *prefix*skip
+  if (command === "skip") skipCommand(message);
 });
-
+//Перед завершением процесса чистить очередь и разывает связь
 process.on("beforeExit", () => {
+  QUEUE.splice(0, QUEUE.length);
+
   client.destroy();
 });
 
