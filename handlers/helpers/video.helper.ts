@@ -1,5 +1,7 @@
 import play from "play-dl";
 import { duration } from "./duration.helper";
+import { QUEUE } from "../../consts/queue";
+const youtubeSearch = require("youtube-search-api");
 
 // формирует стрингу для показа того, что сейчас играет
 export const videoInfo = async (link: string): Promise<string> => {
@@ -22,3 +24,15 @@ export const nowPlaying = async (link: string) => {
 export const addedToQueue = async (link: string) => {
   return `Добавлено в очередь ${await videoInfo(link)}`;
 };
+
+export const addPlayListToQueue = async (link: string) => {
+  const formatedLink = formatPlayListLink(link);
+
+  const playlistInfo = await youtubeSearch.GetPlaylistData(formatedLink, 200);
+
+  playlistInfo.items.forEach((item: { id: string }) => QUEUE.push(`https://www.youtube.com/watch?v=${item.id}`));
+
+  return QUEUE.shift() as string;
+};
+
+const formatPlayListLink = (link: string) => link.split("list=")[1].split("&")[0];

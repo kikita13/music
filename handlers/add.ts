@@ -11,7 +11,7 @@ export const addCommand = async (
 ) => {
   if (connect?.state.status !== 'ready') return message.reply("Хуя ты чо придумал, я еще не в войсе даже");
 
-  const link = checkOnLink(argument, links);
+  const link = await checkOnLink(argument, links);
 
   QUEUE.push(link);
 

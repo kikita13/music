@@ -34,7 +34,7 @@ export const playCommand = async (
   //Подключаемся к нему
   connection(channelOfMember);
   //Получаем ссылку
-  const link = checkOnLink(argument, links);
+  const link = await checkOnLink(argument, links);
 
   if (connect) {
     //Если бот подключился то начинает играть
