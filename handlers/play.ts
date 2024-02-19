@@ -84,5 +84,5 @@ export const getNextResource = async (player: AudioPlayer, message: Message) => 
 
   connect.subscribe(player);
 
-  message.reply(await nowPlaying(streamLink));
+  message.channel.send(await nowPlaying(streamLink));
 }

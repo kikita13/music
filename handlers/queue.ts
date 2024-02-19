@@ -13,5 +13,5 @@ export const queueCommand = async (connect: VoiceConnection, message: Message) =
   const queueInfoPromises = firstTenTracks.map(async (item, index) => `${index + 1} - ${await videoInfo(item)}`);
   const queueInfo = await Promise.all(queueInfoPromises);
 
-  message.reply(queueInfo.join('\n'));
+  message.reply({content: queueInfo.join('\n'), allowedMentions: { parse: [] }});
 }
