@@ -8,7 +8,9 @@ export const queueCommand = async (connect: VoiceConnection, message: Message) =
 
   if (QUEUE.length === 0) return message.reply(`В очереди нет треков`);
 
-  const queueInfoPromises = QUEUE.map(async (item, index) => `${index + 1} - ${await videoInfo(item)}`);
+  const firstTenTracks = [...QUEUE].slice(0, 10);
+
+  const queueInfoPromises = firstTenTracks.map(async (item, index) => `${index + 1} - ${await videoInfo(item)}`);
   const queueInfo = await Promise.all(queueInfoPromises);
 
   message.reply(queueInfo.join('\n'));
