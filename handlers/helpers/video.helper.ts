@@ -28,14 +28,14 @@ export const nowPlaying = async (link: string) => {
 export const addedToQueue = async (link: string) => {
   return `Добавлено в очередь ${await videoInfo(link)}`;
 };
-//Добавление плейлиста в очередь
+// Добавление плейлиста в конец очереди
 export const addPlayListToQueue = async (link: string) => {
-  //Получаем ссылки видео из плейлиста
+  // Получаем ссылки видео из плейлиста
   const urls = await getPlaylistUrls(link);
-  //Пихаем их в очередь
+  // Пихаем их в конец очереди
   QUEUE.push(...urls);
-  //Возвращаем первый элемент очереди
-  return QUEUE.shift() as string;
+  // Не удаляем первый элемент, возвращаем его
+  return urls[0];
 };
 //Достает из ссылки id плейлиста
 const formatPlayListLink = (link: string) => link.split("list=")[1].split("&")[0];
