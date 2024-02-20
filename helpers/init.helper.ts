@@ -20,7 +20,7 @@ export const getInitialState = async (message: Message) => {
 
   return {argument, channel, links, command}
 }
-
+//Формируем клиент с нужными интентами
 export const getClient = () => {
   return new Client({
     intents: [
