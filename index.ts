@@ -9,6 +9,7 @@ import {
   helpCommand,
   skipCommand,
   shuffleCommand,
+  clearCommand,
 } from "./handlers";
 import { QUEUE } from "./consts/queue";
 
@@ -39,6 +40,8 @@ client.on("messageCreate", async (message) => {
   if (command === "skip") skipCommand(message);
   //Отрабатывает при команде *prefix*shuffle
   if (command === "shuffle") shuffleCommand(message, connect);
+  //Отрабатывает при команде *prefix*clear
+  if (command === "clear") clearCommand(message);
 });
 //Перед завершением процесса чистить очередь и разывает связь
 process.on("beforeExit", () => {
