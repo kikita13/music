@@ -12,7 +12,7 @@ export const videoInfo = async (link: string): Promise<string> => {
   //Получаем длительность в нормальном формате
   const time = duration(durationInSec);
   // Удаление всех символов, кроме цифр, знаков препинания и букв любого алфавита
-  let cleanTitle = title?.replace(/[^\w\d\u0400-\u04FF\u0500-\u052F\u2DE0-\u2DFF\uA640-\uA69F.,!?]/gu, '');
+  let cleanTitle = title?.replace(/[^\w\d\s\u0400-\u04FF\u0500-\u052F\u2DE0-\u2DFF\uA640-\uA69F.,!?]/gu, '');
   // Удаление повторяющихся пробелов
   cleanTitle = cleanTitle?.replace(/\s+/g, ' ');
   //Формируем ответ
