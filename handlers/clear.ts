@@ -1,8 +1,10 @@
 import { Message } from "discord.js";
-import { QUEUE } from "../consts/queue";
+import { DatabaseManager } from "../db/client";
 
-export const clearCommand = (message: Message) => {
-  QUEUE.splice(0, QUEUE.length);
+export const clearCommand = async (message: Message, db: DatabaseManager) => {
+  if (!message.guild) return;
 
-  message.reply('Очистил очередь')
+  await db.clearQueue(message.guild.id);
+
+  message.reply("Очистил очередь");
 };

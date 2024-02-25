@@ -9,7 +9,7 @@ import {
 import { Message, VoiceBasedChannel } from "discord.js";
 import play from "play-dl";
 import { checkOnLink, nowPlaying } from "./helpers";
-import { QUEUE } from "../consts/queue";
+import { DatabaseManager } from "../db/client";
 
 export let connect: VoiceConnection;
 export let player: AudioPlayer;
@@ -28,25 +28,33 @@ export const playCommand = async (
   channelOfMember: VoiceBasedChannel,
   message: Message,
   links: string[],
-  argument: string
+  argument: string,
+  db: DatabaseManager
 ) => {
-  // Проверяем есть разрешенный id в голосовом чате
+  //Проверяем есть разрешенный id в голосовом чате
   if (!channelOfMember) return message.reply("В войс зайди заебал");
+  if (!message.guild) return;
   //Подключаемся к нему
-  connection(channelOfMember);
+  console.log(channelOfMember);
+  connection(await channelOfMember);
+  //Получаем id канала
+  const guildId = message.guild.id;
   //Получаем ссылку
-  const link = await checkOnLink(argument, links);
-
+  const link = await checkOnLink(argument, links, guildId, "play", db);
+  //Получаем очередь
+  let queue = await db.getQueue(message.guild.id);
   if (connect) {
     //Если бот подключился то начинает играть
     try {
       player = createAudioPlayer();
-      // Выход из голосового канала после завершения проигрывания или следующий трек
-      player.on(AudioPlayerStatus.Idle, () => {
-        if (QUEUE.length === 0) {
+      //Выход из голосового канала после завершения проигрывания или следующий трек
+      player.on(AudioPlayerStatus.Idle, async () => {
+        queue = await db.getQueue(guildId);
+
+        if (queue && queue.length == 0) {
           connect.destroy();
         } else {
-          getNextResource(player, message);
+          getNextResource(player, message, guildId, db);
         }
       });
 
@@ -69,8 +77,13 @@ export const playCommand = async (
   }
 };
 
-export const getNextResource = async (player: AudioPlayer, message: Message) => {
-  const streamLink = QUEUE.shift()
+export const getNextResource = async (
+  player: AudioPlayer,
+  message: Message,
+  guildId: string,
+  db: DatabaseManager
+) => {
+  const streamLink = await db.getAndRemoveFromQueue(guildId);
 
   if (!streamLink) return;
 
@@ -85,4 +98,4 @@ export const getNextResource = async (player: AudioPlayer, message: Message) => 
   connect.subscribe(player);
 
   message.channel.send(await nowPlaying(streamLink));
-}
+};

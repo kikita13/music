@@ -1,13 +1,20 @@
 import { Message } from "discord.js";
-import { QUEUE } from "../consts/queue";
 import { VoiceConnection } from "@discordjs/voice";
+import { DatabaseManager } from "../db/client";
 
-export const shuffleCommand = (message: Message, connect: VoiceConnection) => {
-  if (connect?.state.status !== 'ready') return message.reply("Хуя ты чо придумал, я еще не в войсе даже");
+export const shuffleCommand = async (
+  message: Message,
+  connect: VoiceConnection,
+  db: DatabaseManager
+) => {
+  if (connect?.state.status !== "ready") return message.reply("Хуя ты чо придумал, я еще не в войсе даже");
+  if (!message.guild) return;
 
-  if (QUEUE.length === 0) return message.reply('Нечего шафалить');
+  const queue = await db.getQueue(message.guild.id);
 
-  QUEUE.sort(() => Math.random() - 0.5);
+  if (!queue) return message.reply("Нечего шафалить");
 
-  message.reply(`Пошафалил немного очередь`)
-}
+  await db.shuffleQueue(message.guild.id);
+
+  message.reply(`Пошафалил немного очередь`);
+};

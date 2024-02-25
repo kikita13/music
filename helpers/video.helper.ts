@@ -6,8 +6,7 @@ export const searchVideoURLs = async (query: string): Promise<string[]> => {
   const response = await youtubeSearch.GetListByKeyword(query);
   //Преобразуем их id в ссылки
   const links = response.items.map(
-    (item: { id: string }) => 
-    `https://www.youtube.com/watch?v=${item.id}`
+    (item: { id: string }) => `https://www.youtube.com/watch?v=${item.id}`
   );
   //Возвращаем ссылки
   return links;

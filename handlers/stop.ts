@@ -1,15 +1,18 @@
 import { VoiceConnection } from "@discordjs/voice";
 import { Message } from "discord.js";
-import { QUEUE } from "../consts/queue";
+import { DatabaseManager } from "../db/client";
 
 //Выполняется при команде *prefix*stop
-export const stopCommand = (
+export const stopCommand = async (
   connect: VoiceConnection,
-  message: Message
+  message: Message,
+  db: DatabaseManager
 ) => {
-  QUEUE.splice(0, QUEUE.length);
-  
-  if (connect.state.status === 'ready') {
+  if (!message.guild) return;
+
+  await db.clearQueue(message.guild.id);
+
+  if (connect.state.status === "ready") {
     connect.destroy();
   } else {
     //Если бот не в голосовом чате

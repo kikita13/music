@@ -1,54 +1,32 @@
-import { getClient, getInitialState } from "./helpers/index";
-import { ActivityType } from "discord.js";
 import {
-  connect,
-  playCommand,
-  stopCommand,
-  addCommand,
-  queueCommand,
-  helpCommand,
-  skipCommand,
-  shuffleCommand,
-  clearCommand,
-} from "./handlers";
-import { QUEUE } from "./consts/queue";
+  messageCreate,
+  guildDelete,
+  ready,
+  beforeExit,
+  guildCreate,
+} from "./clientOn";
+import { getClient } from "./helpers/index";
+import { DatabaseManager } from "./db/client";
+import { BOT_TOKEN } from "./consts";
+
+const db = new DatabaseManager();
 
 const client = getClient();
-//Устанавливаем статус боту
-client.once("ready", () => {
-  client.user?.setActivity("Дёргаю анус", { type: ActivityType.Custom });
-});
-//Реагирует на сообщение
-client.on("messageCreate", async (message) => {
-  //Получаем начальные данные
-  const initialState = await getInitialState(message);
-  //Если их нет, то прекращаем выполнение
-  if (!initialState) return;
-  //Деструктуризация
-  const { argument, channel, links, command } = initialState;
-  //Отрабатывает если команда была *prefix*play *text*
-  if (command === "play") playCommand(channel, message, links, argument);
-  //Отрабатывает при команде *prefix*stop
-  if (command === "stop") stopCommand(connect, message);
-  //Отрабатывает при команде *prefix*add *text*
-  if (command === "add") addCommand(connect, message, argument, links);
-  //Отрабатывает при команде *prefix*queue
-  if (command === "queue") queueCommand(connect, message);
-  //Отрабатывает при команде *prefix*help
-  if (command === "help") helpCommand(message);
-  //Отрабатывает при команде *prefix*skip
-  if (command === "skip") skipCommand(message);
-  //Отрабатывает при команде *prefix*shuffle
-  if (command === "shuffle") shuffleCommand(message, connect);
-  //Отрабатывает при команде *prefix*clear
-  if (command === "clear") clearCommand(message);
-});
-//Перед завершением процесса чистить очередь и разывает связь
-process.on("beforeExit", () => {
-  QUEUE.splice(0, QUEUE.length);
 
-  client.destroy();
-});
+//Устанавливаем статус боту и подключаемся к базе данных
+client.once("ready", async () => await ready(client, db));
+
+//При приглашении в новый канал
+client.on("guildCreate", async (guild) => await guildCreate(guild, db));
+
+//При удалении бота из канала
+client.on("guildDelete", async (guild) => await guildDelete(guild, db));
+
+//Реагирует на сообщение
+client.on("messageCreate", async (message) => await messageCreate(message, db));
+
+//Перед завершением процесса чистить очередь и разывает связь
+process.on("beforeExit", async () => await beforeExit(client, db));
 
 //Формирует клиент, принимает токен бота
-client.login(process.env.BOT_TOKEN);
+client.login(BOT_TOKEN);
