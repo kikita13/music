@@ -15,7 +15,7 @@ export const addCommand = async (
   //Получаем ссылку
   const link = await checkOnLink(argument, links, message.guild.id, "add", db);
   //Пихаем ее в очередь
-  await db.addToQueue(message.guild?.id, link)
+  await db.queue.add(message.guild?.id, link)
   //Пишем в чат что добавили
   message.reply(await addedToQueue(link));
 };

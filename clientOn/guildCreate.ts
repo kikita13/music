@@ -10,7 +10,7 @@ export const guildCreate = async (guild: Guild, db: DatabaseManager) => {
   //Получаем массив идентификаторов администраторов
   const administratorIds = administrators.map((admin) => admin.id);
   //Пихаем в базу новый канал
-  await db.addDefaultConfig(guild.id, {
+  await db.config.setDefault(guild.id, {
     prefix: "!",
     administrators: [...administratorIds],
     ids_for_bot_use: [],

@@ -45,9 +45,9 @@ export const addPlayListToQueue = async (
   if (command === "play") {
     urls.shift();
 
-    await db.addToQueue(guildId, urls);
+    await db.queue.add(guildId, urls);
   } else if (command === "add") {
-    await db.addToQueue(guildId, urls);
+    await db.queue.add(guildId, urls);
   }
   //Не удаляем первый элемент, возвращаем его
   return first;

@@ -10,11 +10,11 @@ export const shuffleCommand = async (
   if (connect?.state.status !== "ready") return message.reply("Хуя ты чо придумал, я еще не в войсе даже");
   if (!message.guild) return;
 
-  const queue = await db.getQueue(message.guild.id);
+  const queue = await db.queue.get(message.guild.id);
 
   if (!queue) return message.reply("Нечего шафалить");
 
-  await db.shuffleQueue(message.guild.id);
+  await db.queue.shuffle(message.guild.id);
 
   message.reply(`Пошафалил немного очередь`);
 };

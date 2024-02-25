@@ -8,7 +8,7 @@ export const addBotUseCommand = async (
 ) => {
   if (!message.guild) return;
 
-  await db.addBotUseId(message.guild.id, argument);
+  await db.botUse.add(message.guild.id, argument);
 
   message.reply(argument + " добавлен в список для использования ботов");
 };

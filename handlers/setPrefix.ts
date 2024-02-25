@@ -11,7 +11,7 @@ export const setPrefixCommand = async (
   //Если сообщение не из канала
   if (!message.guild) return;
   //Получаем текущую конфигурацию
-  await db.updatePrefix(message.guild.id, newPrefix);
+  await db.prefix.set(message.guild.id, newPrefix);
   //Отправляем сообщение об успешном изменении префикса
   message.channel.send(`Префикс изменен на ${newPrefix}`);
 };

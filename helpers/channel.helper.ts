@@ -16,7 +16,7 @@ export const channelOfMember = async (
 
   const isWebhook = message.author.bot
   
-  const ids_for_bot_use = await db.getBotUseIds(message.guild.id) as string[];
+  const ids_for_bot_use = await db.botUse.get(message.guild.id) as string[];
   //Если автор сообщения это бот то канал первого из разрешенных пользователей, если не бот то того кто написал
   const channel = isWebhook
     ? members.find((user) => ids_for_bot_use.find((id) => user.user.id === id))?.voice.channel as VoiceBasedChannel

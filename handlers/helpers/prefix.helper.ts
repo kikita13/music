@@ -4,7 +4,7 @@ import { DatabaseManager } from "../../db/client";
 export const getPrefix = async (message: Message, db: DatabaseManager) => {
   //Проверка, что сообщение пришло с сервера, а не с ЛС
   if (message.guild === null) return;
-  const prefix = await db.getPrefix(message.guild.id);
+  const prefix = await db.prefix.get(message.guild.id);
   //Возвращаем префикс сервера
   return prefix;
 };

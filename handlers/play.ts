@@ -35,21 +35,20 @@ export const playCommand = async (
   if (!channelOfMember) return message.reply("В войс зайди заебал");
   if (!message.guild) return;
   //Подключаемся к нему
-  console.log(channelOfMember);
   connection(await channelOfMember);
   //Получаем id канала
   const guildId = message.guild.id;
   //Получаем ссылку
   const link = await checkOnLink(argument, links, guildId, "play", db);
   //Получаем очередь
-  let queue = await db.getQueue(message.guild.id);
+  let queue = await db.queue.get(message.guild.id);
   if (connect) {
     //Если бот подключился то начинает играть
     try {
       player = createAudioPlayer();
       //Выход из голосового канала после завершения проигрывания или следующий трек
       player.on(AudioPlayerStatus.Idle, async () => {
-        queue = await db.getQueue(guildId);
+        queue = await db.queue.get(guildId);
 
         if (queue && queue.length == 0) {
           connect.destroy();
@@ -83,7 +82,7 @@ export const getNextResource = async (
   guildId: string,
   db: DatabaseManager
 ) => {
-  const streamLink = await db.getAndRemoveFromQueue(guildId);
+  const streamLink = await db.queue.next(guildId);
 
   if (!streamLink) return;
 

@@ -11,7 +11,7 @@ export const queueCommand = async (
   if (connect?.state.status !== "ready") return message.reply("Хуя ты чо придумал, я еще не в войсе даже");
   if (!message.guild) return;
   //Получаем очередь
-  const queue = await db.getQueue(message.guild.id);
+  const queue = await db.queue.get(message.guild.id);
   //Если очередь пустая
   if (!queue || queue.length === 0) return message.reply(`В очереди нет треков`);
   //Получаем первые 10 элементов
