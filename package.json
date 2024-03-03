@@ -16,7 +16,9 @@
     "discord.js": "^14.14.1",
     "libsodium-wrappers": "^0.7.13",
     "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
     "play-dl": "^1.9.7",
+    "sequelize": "^6.37.1",
     "youtube-search-api": "^1.2.1"
   },
   "devDependencies": {

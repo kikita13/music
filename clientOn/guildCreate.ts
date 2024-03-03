@@ -1,3 +1,4 @@
+import { Query } from "../db/enums/confiColumn";
 import { Guild } from "discord.js";
 import { DatabaseManager } from "../db/client";
 
@@ -10,8 +11,9 @@ export const guildCreate = async (guild: Guild, db: DatabaseManager) => {
   //Получаем массив идентификаторов администраторов
   const administratorIds = administrators.map((admin) => admin.id);
   //Пихаем в базу новый канал
-  await db.config.setDefault(guild.id, {
-    prefix: "!",
+  await db.addDefaultConfig({
+    guild_id: guild.id,
+    prefix: ["!"],
     administrators: [...administratorIds],
     ids_for_bot_use: [],
     queue: [],

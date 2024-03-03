@@ -1,5 +1,6 @@
 import { Message } from "discord.js";
 import { DatabaseManager } from "../../db/client";
+import { Query } from "../../db/models";
 
 export const addBotUseCommand = async (
   message: Message,
@@ -8,7 +9,7 @@ export const addBotUseCommand = async (
 ) => {
   if (!message.guild) return;
 
-  await db.botUse.add(message.guild.id, argument);
+  await db.add(Query.botUse, message.guild.id, argument);
 
   message.reply(argument + " добавлен в список для использования ботов");
 };

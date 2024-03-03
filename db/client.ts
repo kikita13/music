@@ -1,75 +1,98 @@
-import { Client } from "pg";
-import { GuildConfig } from "./models";
-import { CONNECTION_STRING } from "./consts";
-import {
-  connect,
-  disconnect,
-  addDefaultConfig,
-  getConfig,
-  removeConfig,
-  updateConfig,
-  getAdminIds,
-  addAdminId,
-  getBotUseIds,
-  addBotUseId,
-  getNextFromQueue,
-  getQueue,
-  addToQueue,
-  clearQueue,
-  shuffleQueue,
-  updatePrefix,
-  getPrefix,
-} from "./methods";
-//Создаем класс для работы с базой данных
-export class DatabaseManager {
-  private dbClient: Client;
+import { config } from "./consts";
+import { sequelize } from "./consts/sequelize";
+import { ConfigColumn } from "./enums";
 
-  //Создаем клиент по url
-  constructor() {
-    this.dbClient = new Client({ connectionString: CONNECTION_STRING });
+export class DatabaseManager {
+  private db = sequelize;
+
+  async connect() {
+    try {
+      await this.db.authenticate();
+      console.log(`Подключение к базе данных успешно.`);
+    } catch (error) {
+      console.log(`Ошибка подключения к базе данных: ${error}`);
+    }
   }
 
-  readonly connection = {
-    connect: async () => await connect(this.dbClient),
-    disconnect: async () => await disconnect(this.dbClient),
-  };
+  async disconnect() {
+    try {
+      await this.db.close();
+      console.log(`Подключение к базе данных успешно разорвано.`);
+    } catch (error) {
+      console.log(`Ошибка отключения от базы данных: ${error}`);
+      throw error;
+    }
+  }
 
-  readonly config = {
-    get: async (guildId: string) => await getConfig(this.dbClient, guildId),
-    update: async (guildId: string, newData: GuildConfig) =>
-      await updateConfig(this.dbClient, guildId, newData),
-    setDefault: async (guildId: string, defaultConfig: GuildConfig) =>
-      await addDefaultConfig(this.dbClient, guildId, defaultConfig),
-    remove: async (guildId: string) =>
-      await removeConfig(this.dbClient, guildId),
-  };
+  async get(configColumn: ConfigColumn, guild: string) {
+    try {
+      const result = await config.findOne({
+        attributes: [configColumn],
+        where: {
+          guild_id: guild
+        }
+      })
+      console.log(`${configColumn} успешно получено с ${guild}.`);
+      return result;
+    } catch (error) {
+      console.log(`Ошибка при получении ${configColumn} с ${guild}: ${error}`);
+      throw error;
+    }
+  }
 
-  readonly administrators = {
-    get: async (guildId: string) => await getAdminIds(this.dbClient, guildId),
-    add: async (guildId: string, adminId: string) =>
-      await addAdminId(this.dbClient, guildId, adminId),
-  };
+  async add(configColumn: ConfigColumn, guild: string, value: string) {
+    try {
+      const result = await this.get(configColumn, guild);
 
-  readonly botUse = {
-    get: async (guildId: string) => await getBotUseIds(this.dbClient, guildId),
-    add: async (guildId: string, botUseId: string) =>
-      await addBotUseId(this.dbClient, guildId, botUseId),
-  };
+      if (result && configColumn !== ConfigColumn.guild_id) {
+        result[configColumn].push(value);
 
-  readonly queue = {
-    get: async (guildId: string) => await getQueue(this.dbClient, guildId),
-    add: async (guildId: string, item: string | string[]) =>
-      await addToQueue(this.dbClient, guildId, item),
-    clear: async (guildId: string) => await clearQueue(this.dbClient, guildId),
-    next: async (guildId: string) =>
-      await getNextFromQueue(this.dbClient, guildId),
-    shuffle: async (guildId: string) =>
-      await shuffleQueue(this.dbClient, guildId),
-  };
+        await result.save();
+        console.log(`Успешно добавлено ${value} в ${configColumn} с ${guild}`);
+      }
+    } catch (error) {
+      console.log(`Ошибка при добавлении ${value} в ${configColumn} с ${guild}: ${error}`);
+      throw error;
+    }
+  }
 
-  readonly prefix = {
-    set: async (guildId: string, newPrefix: string) =>
-      await updatePrefix(this.dbClient, guildId, newPrefix),
-    get: async (guildId: string) => await getPrefix(this.dbClient, guildId),
-  };
+  async remove(configColumn: ConfigColumn, guild: string, value: string) {
+    try {
+      const result = await this.get(configColumn, guild);
+
+      if (result && configColumn !== ConfigColumn.guild_id) {
+        result[configColumn] = result[configColumn].filter(item => item !== value);
+
+        await result.save();
+        console.log(`Успешно удалено ${value} из ${configColumn} с ${guild}`);
+      }
+    } catch (error) {
+      console.log(`Ошибка при удалении ${value} из ${configColumn} с ${guild}: ${error}`);
+      throw error;
+    }
+  }
+
+  async removeConfig(guild: string) {
+    try {
+      await config.destroy({
+        where: {
+          guild_id: guild
+        }
+      });
+      console.log(`Конфигурация для ${guild} успешно удалена из базы данных.`);
+    } catch (error) {
+      console.log(`Ошибка при удалении конфигурации для ${guild}: ${error}`);
+      throw error;
+    }
+  }
+
+  async addDefaultConfig(defaultConfig: any) {
+    try {
+      await config.create(defaultConfig);
+      console.log(`Создан дефолтный конфиг для ${defaultConfig.guild_id}.`);
+    } catch (error) {
+      console.log(`Ошибка при создании дефолтного конфига для ${defaultConfig.guild_id}: ${error}`);
+      throw error;
+    }
+  }
 }

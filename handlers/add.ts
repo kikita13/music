@@ -1,3 +1,4 @@
+import { Query } from "../db/enums/confiColumn";
 import { Message } from "discord.js";
 import { addedToQueue, checkOnLink } from "./helpers";
 import { VoiceConnection } from "@discordjs/voice";
@@ -8,14 +9,15 @@ export const addCommand = async (
   message: Message,
   argument: string,
   links: string[],
-  db: DatabaseManager,
+  db: DatabaseManager
 ) => {
-  if (connect?.state.status !== "ready") return message.reply("Хуя ты чо придумал, я еще не в войсе даже");
-  if(!message.guild) return;
+  if (connect?.state.status !== "ready")
+    return message.reply("Хуя ты чо придумал, я еще не в войсе даже");
+  if (!message.guild) return;
   //Получаем ссылку
   const link = await checkOnLink(argument, links, message.guild.id, "add", db);
   //Пихаем ее в очередь
-  await db.queue.add(message.guild?.id, link)
+  await db.add(Query.queue, message.guild.id, link);
   //Пишем в чат что добавили
   message.reply(await addedToQueue(link));
 };

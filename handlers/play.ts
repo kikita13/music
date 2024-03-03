@@ -10,6 +10,7 @@ import { Message, VoiceBasedChannel } from "discord.js";
 import play from "play-dl";
 import { checkOnLink, nowPlaying } from "./helpers";
 import { DatabaseManager } from "../db/client";
+import { Query } from "../db/models";
 
 export let connect: VoiceConnection;
 export let player: AudioPlayer;
@@ -41,14 +42,14 @@ export const playCommand = async (
   //Получаем ссылку
   const link = await checkOnLink(argument, links, guildId, "play", db);
   //Получаем очередь
-  let queue = await db.queue.get(message.guild.id);
+  let queue = await db.get(Query.queue, guildId);
   if (connect) {
     //Если бот подключился то начинает играть
     try {
       player = createAudioPlayer();
       //Выход из голосового канала после завершения проигрывания или следующий трек
       player.on(AudioPlayerStatus.Idle, async () => {
-        queue = await db.queue.get(guildId);
+        queue = await db.get(Query.queue, guildId);
 
         if (queue && queue.length == 0) {
           connect.destroy();

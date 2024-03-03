@@ -1,6 +1,4 @@
-export interface GuildConfig {
-  prefix: string;
-  ids_for_bot_use: string[];
-  administrators: string[];
-  queue: string[];
-}
+import { Model } from "sequelize";
+import { GuildConfigAttributes } from "./guildConfigAttributes";
+
+export interface GuildConfig extends Model<GuildConfigAttributes>, GuildConfigAttributes {}

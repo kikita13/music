@@ -1,3 +1,4 @@
+import { Query } from "../../db/enums/confiColumn";
 import play from "play-dl";
 import { duration } from "./duration.helper";
 import { DatabaseManager } from "../../db/client";
@@ -45,9 +46,9 @@ export const addPlayListToQueue = async (
   if (command === "play") {
     urls.shift();
 
-    await db.queue.add(guildId, urls);
+    await db.add(Query.queue, guildId, urls);
   } else if (command === "add") {
-    await db.queue.add(guildId, urls);
+    await db.add(Query.queue, guildId, urls);
   }
   //Не удаляем первый элемент, возвращаем его
   return first;

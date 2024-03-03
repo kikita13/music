@@ -23,13 +23,11 @@ export const messageCreate = async (message: Message, db: DatabaseManager) => {
   //Деструктуризация
   const { argument, channel, links, command } = initialState;
   //Отрабатывает если команда была *prefix*play *text*
-  if (command === "play")
-    await playCommand(channel as any, message, links, argument, db);
+  if (command === "play") await playCommand(channel as any, message, links, argument, db);
   //Отрабатывает при команде *prefix*stop
   if (command === "stop") await stopCommand(connect, message, db);
   //Отрабатывает при команде *prefix*add *text*
-  if (command === "add")
-    await addCommand(connect, message, argument, links, db);
+  if (command === "add") await addCommand(connect, message, argument, links, db);
   //Отрабатывает при команде *prefix*queue
   if (command === "queue") await queueCommand(connect, message, db);
   //Отрабатывает при команде *prefix*help

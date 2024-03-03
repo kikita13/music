@@ -1,2 +1,2 @@
 export * from "./guildConfig";
-export * from "./dbResponse";
+export * from "./guildConfigAttributes";

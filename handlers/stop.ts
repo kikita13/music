@@ -10,8 +10,8 @@ export const stopCommand = async (
 ) => {
   if (!message.guild) return;
 
-  await db.queue.clear(message.guild.id);
-
+  // await db.queue.clear(message.guild.id);
+  message.reply('')
   if (connect.state.status === "ready") {
     connect.destroy();
   } else {
